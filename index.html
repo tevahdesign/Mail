@@ -82,6 +82,32 @@
     ]
   }
   </script>
+  <script>
+// 🚨 Basic bot & invalid traffic filter
+(function() {
+  const badAgents = [
+    /bot/i, /crawl/i, /spider/i, /slurp/i,
+    /facebook/i, /pinterest/i, /vkshare/i,
+    /wget/i, /curl/i, /python/i, /java/i, /headless/i
+  ];
+
+  const ua = navigator.userAgent;
+  const isBot = badAgents.some(rx => rx.test(ua));
+
+  // 🚨 Block if no JS / cookies / weird headless
+  const noCookies = !navigator.cookieEnabled;
+  const noLang = !navigator.language;
+  const headlessCheck = !('webdriver' in navigator) && ua.includes("Headless");
+
+  if (isBot || noCookies || noLang || headlessCheck) {
+    console.warn("Blocked bot/invalid traffic:", ua);
+    // Option 1: Redirect
+    window.stop();
+    document.documentElement.innerHTML = "<h1>Access Denied</h1>";
+  }
+})();
+  </script>
+  
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2885050972904135"
      crossorigin="anonymous"></script>
 <!-- New -->
